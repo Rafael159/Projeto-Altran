@@ -45,7 +45,8 @@ main #description #sub-description{
 /*Página de acesso*/
 .box-init{ 
     display: block;
-    height:100vh;
+    min-height:100vh;
+    height: auto;
     padding:5%;
 }
 .box-init#box-sign-up{
@@ -64,4 +65,8 @@ main #description #sub-description{
 #box-sign-up .box-title{ color:#333; }
 #box-login .box-title{ color:#fff; }
 
+.box-error{
+    margin:10px 0;
+    display: none;
+}
 /*Fim da página de acesso*/
