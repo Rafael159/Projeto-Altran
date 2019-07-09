@@ -84,9 +84,7 @@ $(document).ready(function(){
 		$method = $form.attr('method');		
 
 		executaFormulario($form, $action, $method);
-	})
-	 /**
-	 * Fim das Funções referente ao Login
-	 */
+	});
+	/*Fim funções referente ao login */
 
 });

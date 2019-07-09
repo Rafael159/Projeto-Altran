@@ -1,0 +1,92 @@
+.filtros-titulo{
+    font-size: 1.2em;
+    color: #5b5b5b;
+    width: 100%;
+    background: #ffffff;
+    text-align: center;
+    padding: 5px;
+    margin: 10px 0px;
+    border: 1px solid #5b5b5b;
+    border-radius: 3px;
+}
+.filter-calendar{
+    background:#ffffff;
+    border:1px solid #ccc;
+    border-radius:5px;
+    display: block;
+    padding:0px !important;    
+    margin-bottom:10px;
+}
+
+.filter-calendar .filter-header{
+    display: block;
+    text-align: center;
+    background: #565656;
+    color: #fff;
+    padding: 4px;
+    font-size: .9em;
+    margin-bottom:10px;
+}
+.filter-calendar #rooms, .filter-calendar #doctors, 
+.filter-calendar #status{ width: 100%; padding:0px 5px}
+
+.filter-calendar #rooms .each-room,
+.filter-calendar #doctors .each-doctor,
+.filter-calendar #status .each-status{
+    margin:5px;
+    height: 24px;
+    line-height: 36px;
+    border:0.5px solid #ccc;
+    padding:0px 5px;
+    font-weight: 400;
+    cursor:pointer;
+}
+.filter-calendar #rooms .each-room:hover,
+.filter-calendar #doctors .each-doctor:hover,
+.filter-calendar #status .each-status:hover{
+    background:#17a4eb;
+    color:#fff;
+}
+
+#rooms input[type="checkbox"], 
+#doctors input[type="checkbox"],
+#status input[type="checkbox"]{
+    position: relative;
+    margin-top: 5px;
+    z-index: -1;
+}
+.filter-calendar #rooms .each-room label,
+.filter-calendar #doctors .each-doctor label,
+.filter-calendar #status .each-status label{
+    font-size: .8em;
+    margin-top: -5px;
+    position: absolute;
+    cursor:pointer;
+    width: 90%;
+}
+.room-color{
+    width: 20px;
+    height: 20px;
+    display: block;
+    float: right;
+    margin-top: 1px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+}
+.room-title, .medico-nome{ 
+    margin-top: -2px;
+    margin-left: 3px;
+    position: absolute;  
+}
+
+.checked{
+    background: #6aaff8;
+    color: #fff;
+    font-weight: bold;
+}
+
+/** MUDAR ESTILO DO FULLCALENDAR*/
+.fc-time-grid-event{
+    width: 75% ;
+}
+.fc-content .fc-title, .fc-content .fc-time{ color:#fff !important; }

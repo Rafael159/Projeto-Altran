@@ -15,8 +15,6 @@
     <body>
         <div class="container-fluid nopadding">
 			<!--Modal usado para alguns alertas-->
-
-			<!-- Modal -->
 			<div class="modal fade" id="caixaAlerta" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">

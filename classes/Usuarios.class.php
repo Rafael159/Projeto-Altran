@@ -96,11 +96,6 @@ class Usuarios{
 		}
 	}
 
-
-
-
-
-
 	public static function getUsuario($field = null){
 		if(!isset($_SESSION)) session_start();
 			

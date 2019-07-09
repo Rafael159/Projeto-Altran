@@ -56,6 +56,7 @@ if($dados):
     $_SESSION['email'] = $dados->email;
     $_SESSION['nome']  = $dados->nome;				
     $_SESSION['tipousuario']  = $dados->tipousuario;
+	$_SESSION['usuario'] = serialize($dados);
 
     $retorno = array('status'=>'1', 'mensagem'=>'Logado com sucesso', 'nivel'=>$dados->tipousuario);
     echo json_encode($retorno);

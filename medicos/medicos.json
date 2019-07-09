@@ -1,0 +1,27 @@
+[
+    {
+        "id":"1",
+        "nome": "João Santos",
+        "crm":"147228369"
+    },
+    {
+        "id":"2",
+        "nome": "Maria Aparecida",
+        "crm":"147228369"
+    },
+    {
+        "id":"3",
+        "nome": "Carlos Silva Santos",
+        "crm":"112233445566"
+    },
+    {
+        "id":"4",
+        "nome": "Diogo Lima",
+        "crm":"1593574785"
+    },
+    {
+        "id":"5",
+        "nome": "Madalena Costa",
+        "crm":"258147369"
+    }
+]

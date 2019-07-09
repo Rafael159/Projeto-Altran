@@ -70,3 +70,34 @@ main #description #sub-description{
     display: none;
 }
 /*Fim da página de acesso*/
+
+/*Menu*/
+.nav-container{
+    background:#009fe3;
+}
+.nav-container .menu{
+    margin:0 5px;
+    border-radius:5px;
+    transition:0.5s all;
+    -webkit-transition:0.5s all;
+    -ms-transition:0.5s all;
+    -o-transition:0.5s all;
+}
+.nav-container .menu:hover{
+    background:#000;
+}
+.nav-container .menu:hover a{
+    color:#fff;
+}
+.nav-container .menu a{
+    color:#fff !important;
+}
+/*Fim Menu*/
+
+/*Calendário*/
+#calendar{
+    background: #0f4f52;
+    margin: 15px;
+    color: #fff;
+}
+/*Fim Calendário*/
