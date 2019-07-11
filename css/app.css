@@ -97,7 +97,23 @@ main #description #sub-description{
 /*Calendário*/
 #calendar{
     background: #0f4f52;
-    margin: 15px;
+    margin: 15px 0;
     color: #fff;
 }
+.schedule{
+    margin:30px;
+    padding:15px;
+}
+
+/*editar o layout do Fullcalendar*/
+.fc-unthemed td.fc-today {
+    background: #86720e !important;
+}
+.fc td, .fc th{ cursor: pointer;}
+.diaselecionado {
+    background-color: #f55 !important;
+    transition: background-color 80ms linear; 
+}
+/* .fc-month-button, .fc-agendaWeek-button{ display: none; } */
+
 /*Fim Calendário*/

@@ -6,7 +6,7 @@ $(document).ready(function(){
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
+				right: 'agendaWeek,agendaDay'
 			},
 			ignoreTimezone: false,
 			monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
@@ -19,8 +19,12 @@ $(document).ready(function(){
 			eventLimit: true,
 			minTime: '9:00',
 			maxTime: '15:00',
-			timeFormat: 'H(:mm)',
-			defaultTimedEventDuration : '00:30:00', 
+            timeFormat: 'H(:mm)',
+            defaultView:'agendaDay',
+            defaultTimedEventDuration : '00:30:00', 
+            validRange:{
+                start: new Date().toISOString().substring(0,10)
+            },
 			buttonText: {
 				today: "Hoje",
 				month: "Mês",
@@ -28,18 +32,30 @@ $(document).ready(function(){
 				day: "Dia",
 			},
             dayClick: function(date, jsEvent, view){
-                var dayselected = moment(date.format());
+                // Remove a classe do dia selecionado
+                $('.fc-bg > table > tbody > tr > td').removeClass('diaselecionado');
+
+                // Adiciona a classe "selecionado" ao dia clicado
+                $(this).addClass('diaselecionado');
+
+                var dayselected = moment(date.format());//pegar e formatar data clicada
                 // console.log(dayselected);
-                jQuery("#diasemana").val(dayselected.day());
+                // jQuery("#diasemana").val(dayselected.day());
                 //   zeraformulario();
                 //   setsalasclinicas('','');
 
-                jQuery('#_data').val(date.format());
-                jQuery('#data').val(date);
+                //jQuery('#data').val(date);
 
                 var $strdata = date.format().split('T'); 
                 var hora =  date.format().split('T')[1];
                 var data = new Date();
+                if(typeof hora === 'undefined'){
+                    jQuery('#dataconsulta').val(date.format('L'));//enviar para o formulário a data                    
+                }else{
+                    jQuery('#dataconsulta').val(date.format('L') + ' ' + hora);//enviar para o formulário a data
+                }
+
+                jQuery('#datareal').val(date.format());//enviar para o formulário a data
                 
                 var dataAtual = (data.getFullYear() + '-' + (data.getMonth()+1) + '-' + data.getDate());
                 
@@ -73,66 +89,7 @@ $(document).ready(function(){
             // }
         },
 		eventClick: function(calEvent, jsEvent, view){
-			$("#boxredireciona").fadeOut();
-     
-			$.ajax({
-			url: 'eventos/xeventosdetalhes',
-			Type: 'GET',
-			data: {
-				id: calEvent.obs
-			},
-			success: function(doc){					
-                result = JSON.parse(doc);
-                evento = result.dados;
-                ficha = result.ficha;                        
-                    if(evento){
-                        $("#boxredireciona").fadeIn();
-                    }
-
-                    document.getElementById('str_data').innerHTML = dataconvert(evento.dataconsulta);
-                    document.getElementById('str_hora').innerHTML = retornahorario(evento.startconsulta, evento.endconsulta);
-                
-                var href='';
-
-                if(evento.status === "finalizado"){
-                    href = '/medicos/medicofichaclinica/'+ficha.id;
-                }else{
-                    href = '/medicos/medicofichaclinica/'+ficha.id+'/'+evento.id;
-                }
-                
-                    $('#redireciona').removeAttr('href');
-                    $('#redireciona').attr('href', href);
-
-                    $('#alerta').css('display','none');
-                    $('#alerta').html('');
-                    $('[name=atividade]').val(evento.atividade);
-                    $('[name=obs]').val(evento.obs);
-            
-                    //$('[name=medico] option').eq(evento.medico).prop('selected', true);
-                    $('[name=medico]').val(evento.medico);
-                    $('[name=paciente]').val(evento.paciente);
-                
-                    $('[name=status]').val(evento.status);
-                    $('[name=clinica]').val(evento.idclinica);
-
-                    setespecialidades(evento.medico);
-                    setsalasclinicas(evento.idclinica,evento.sala);
-
-                    $('#footer').html(''); 
-                    $('#footer').append("<input id='calevent' type='hidden' value='" + calEvent._id + "' >");
-                    $('#footer').append("<input id='idagendamento' type='hidden' value='" + calEvent.obs + "' >");
-                    
-                    if(!(evento.status == 'finalizado')){
-                        if(tipoperfil!=='Médico'){
-                            $('#footer').append("<button type='button' class='btn btn-success' onclick='edita()'>Editar</button>");
-                            $('#footer').append("<button type='button' class='btn btn-danger'  onclick='exclui()' data-dismiss='modal'>Excluir</button>");
-                        }
-                }
-				$('#footer').append("<button type='button' class='btn btn-primary' data-dismiss='modal'>Fechar</button>");
-				
-				jQuery('#exampleModal').modal('show');
-			}
-			});
+			
 		},
 		navLinks: true,   // can click day/week names to navigate views
 		eventLimit: false, // allow "more" link when too many events
@@ -143,13 +100,13 @@ $(document).ready(function(){
 			// salas = getSalas();
 			// medicos = getMedicos();
 			// grupoStatus = getStatus();
-			
+           
 			$.ajax({
 				url: '../agendamentos/agenda.php',
                 method: 'POST',
                 // dataType: 'json',
 				data: {
-                    tipoform: 'consultas'
+                    tipoform: 'consultaindividual'
 					// salas : salas,
 					// status: grupoStatus,
 					// medicos : medicos					
@@ -168,6 +125,78 @@ $(document).ready(function(){
 		},
 		});
 	}
+
+    /**
+	 * Função - Executar de forma dinâmica via ajax o formulário com base nos dados passado
+	 * Nesse caso irá executar os formulário de cadastro e login 
+	 * @param {*formulário } form 
+	 * @param {*página na qual será enviado o formulário} acao
+	 * @param {* método usado (post, get)} metodo
+	 * @return - Sucesso / Erro
+	 */	
+	function scheduler(form, acao, metodo, tipo){
+		idForm = form.attr("id");
+		
+		$.ajax({
+			method: metodo,
+			url: acao,
+			dataType:'json',
+			data: form.serialize(),
+			success: function(dados){
+				if(dados.status == "0"){
+					$("#"+idForm +" .box-error").fadeIn();
+					$("#"+idForm +" .box-error .erros").html(dados.mensagem);
+				}else{					
+                    $("#"+idForm +" .box-error").fadeOut();
+                    window.location.reload();
+				}
+			}
+		});
+	}
+
+    $('#agendarconsulta').on('click', function(ev){
+        ev.preventDefault();
+        //informações do formulário
+        $form = $(this).parent();
+		$action = $form.attr('action');
+		$method = $form.attr('method');
+        // idForm = $form.attr('id');
+
+        //dados do formulário
+        // $paciente = $('#paciente').val();
+        // $medico = $('#select-medico').val();
+        // $dataconsulta = $('#datareal').val();
+        console.log($method);
+        scheduler($form, $action, $method);
+        
+    });
+
+    window.desmarcarConsulta = function(id){
+        var x = confirm("Tem certeza que deseja desmarcar a consulta #"+id);
+        if (x){
+            //enviar via ajax ser deletado
+            $.ajax({
+				url: '../agendamentos/agenda.php',
+                method: 'POST',
+                dataType: 'json',               
+				data: {
+                    tipoform: 'deletar',
+                    idagenda: id					
+				},
+                success: function(dados){
+                    console.log(dados);
+                    if(dados.status =="0"){
+                        alert(dados.mensagem);
+                    }else{
+                        alert(dados.mensagem);                        
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+        else
+            return false;
+        }
 
 	load_calendar();
 });

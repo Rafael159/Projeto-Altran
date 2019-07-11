@@ -8,19 +8,19 @@
 		<ul class="navbar-nav ml-auto">
 			<?php
 				$user = Usuarios::getUsuario();
+				$notificacoes = new Notificacoes;
+				$row = $notificacoes->getNotificacoes();//buscar todas as ações da parte do cliente
+
 				if(!empty($user)):
 					$emailLogado = $user->email;
 					$usuario  = $user->nome;
                     $status = $user->tipousuario;
-                    echo $status;
 					if($status > 1):
             ?>
-					<li class="menu nav-item"><a href="#" class="nav-link"> <i class="fa fa-bell"></i> Notificações</a></li>
-					<!-- <li class="menu nav-item"><a href="users/dashboard.php" class="nav-link"> <i class="fa fa-home"></i></a></li> -->               
-					<!-- <li class="menu nav-item"><a href="admin/admin.php" class="nav-link"> <i class="fa fa-home"></i></a></li> -->
+					<li class="menu nav-item" data-toggle="modal" data-target="#news"><a href="#" class="nav-link"> <i class="fa fa-bell"></i> Notificações (<?php echo count($row)?>)</a></li>					
                 <?php endif; ?>                
                     <li class="menu nav-item" ><a href="#" class="nav-link" style="cursor:inherit"><i class="fa fa-user"></i> <?php echo $usuario;?></a></li>
-					<li class="menu nav-item"><a href="sair.php" class="nav-link"><i class="fa fa-sign-out"></i> Sair</a></li>
+					<li class="menu nav-item"><a href="../logout.php" class="nav-link"><i class="fa fa-sign-out"></i> Sair</a></li>
 			    <?php endif; ?>
 		</ul>
 	</div>            

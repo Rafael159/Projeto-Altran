@@ -4,7 +4,7 @@ $(document).ready(function(){
 	/**
 	 * @param {*id do formulário} idForm 
 	 */
-	function limparFormulário(idForm){
+	window.limparFormulário = function(idForm){
 		$('#'+idForm).each (function(){
 			this.reset();
 		});
@@ -12,7 +12,7 @@ $(document).ready(function(){
 	/**
 	 * @param {*Mensagem que será exibida no box} mensagem 
 	 */
-	function alerta(mensagem){
+	window.alerta = function(mensagem){		
 		$("#caixa-mensagem").html(mensagem);
 		$("#caixaAlerta").modal();
 	}
@@ -68,7 +68,7 @@ $(document).ready(function(){
 		$action = $form.attr('action');
 		$method = $form.attr('method');		
 
-		executaFormulario($form, $action, $method);
+		executaFormulario($form, $action, $method, 'cadastro');
 	});
 	 /**
 	 * Fim das Funções referente ao cadastro do cliente
@@ -83,7 +83,7 @@ $(document).ready(function(){
 		$action = $form.attr('action');
 		$method = $form.attr('method');		
 
-		executaFormulario($form, $action, $method);
+		executaFormulario($form, $action, $method, 'login');
 	});
 	/*Fim funções referente ao login */
 

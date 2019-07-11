@@ -2,6 +2,8 @@
     spl_autoload_register(function($classe) {
         require('../classes/'.$classe.'.class.php');	
     });
+    $notificacoes = new Notificacoes;
+    $row = $notificacoes->getNotificacoes();//buscar todas as ações da parte do cliente
 ?>
 
 <!DOCTYPE HTML>
@@ -29,10 +31,62 @@
             <?php require_once('../require/header.php'); ?>
 
             <div class="row d-flex justify-content-center nopadding">
-        		<div class='col-lg-10'>
+        		<div class='col-lg-12'>
                 	<div id='calendar'><!--o calendário vem aqui--></div>
-                </div>
+                </div>                
             </div>
+
+            <div class="modal fade" id="news" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+					<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Notificação</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="news-content">
+                        <div id="feed">                            
+                            <?php                                
+                                if(count($row) <= 0):
+                            ?>
+                            <span class="alert alert-info text-center" style="display:block">Nenhuma consulta agendada. Agende no formulário ao lado </span>
+                            <?php else: ?>
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tipo</th>
+                                        <th>Mensagem</th>
+                                        <th>Usuário</th>
+                                        <th>Data da modificação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        foreach($row as $notifica => $news):
+                                    ?>
+                                    <tr>
+                                        <td>#<?php echo $news->idnotifica?></td>
+                                        <td><?php echo $news->tipo?></td>
+                                        <td><?php echo $news->mensagem?></td>
+                                        <td><?php echo $news->nome?></td>
+                                        <td><?php echo date("d/m/Y H:i", strtotime($news->dataacao))?></td>
+                                    </tr>
+                                    <?php endforeach; ?>               
+                                </tbody>
+                            </table>
+                            <?php endif; ?>
+                        </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+					</div>
+					</div>
+				</div>
+			</div>
+
+
         </div>
 
         <script src="../js/jquery.js"></script>		
