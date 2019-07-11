@@ -89,7 +89,7 @@ $(document).ready(function(){
             // }
         },
 		eventClick: function(calEvent, jsEvent, view){
-			
+			console.log(calEvent);
 		},
 		navLinks: true,   // can click day/week names to navigate views
 		eventLimit: false, // allow "more" link when too many events
@@ -172,7 +172,7 @@ $(document).ready(function(){
     });
 
     window.desmarcarConsulta = function(id){
-        var x = confirm("Tem certeza que deseja desmarcar a consulta #"+id);
+        var x = confirm("Tem certeza que deseja desmarcar a consulta #"+id+' ?');
         if (x){
             //enviar via ajax ser deletado
             $.ajax({
@@ -194,9 +194,22 @@ $(document).ready(function(){
                 }
             });
         }
-        else
+        else{
             return false;
         }
+    }
+
+    jQuery.datetimepicker.setLocale('pt-BR');
+    $('#datetimepicker').datetimepicker();	
+    
+    window.atualizarConsulta = function(idagenda, nome, medicoID, dataconsulta, datareal){
+        console.log(idagenda, nome, medicoID, dataconsulta, datareal);
+        $("#up-medico").val(medicoID);
+        $("#up-dataconsulta").val(dataconsulta);
+        $("#up-datareal").val(datareal);
+
+        $("#btnAbrir").click();
+    }
 
 	load_calendar();
 });

@@ -35,6 +35,7 @@
 		<link href="../css/fullcalendar/fullcalendar.print.min.css" rel='stylesheet' media='print' />
 		<link href="../css/fullcalendar/myfullcalendar.css" rel='stylesheet'/>
 		
+		<link rel="stylesheet" type="text/css" href="../datetimepicker/jquery.datetimepicker.css" >
 		<!-- Datapicker -->
 		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.min.css"> -->
 		<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" /> -->
@@ -44,10 +45,12 @@
     <body style="background:#ccc">
         <div class="container-fluid nopadding">
             <?php require_once('../require/header.php'); ?>
-
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#formEditar" id="btnAbrir" style="display:none">
+				Abrir modal
+			</button>
             <div id="box-principal">
                 <div class="row d-flex justify-content-center nopadding">
-                    <div class="col-lg-5">
+                    <div class="col-lg-5">					
                         <div class="schedule" id="form-consulta">
                             <span class="box-title">Adicionar consulta</span>
                             <form method="post" name="form-consulta" id="form-consulta" action="../agendamentos/agenda.php">
@@ -107,6 +110,7 @@
 								<tbody>
 									<?php
 										foreach($minhaagenda as $ag => $evento):
+											//print_r($evento);
 									?>
 									<tr>
 										<td>#<?php echo $evento->idagenda?></td>
@@ -114,7 +118,7 @@
 										<td><?php echo $evento->medico?></td>
 										<td><?php echo date("d/m/Y H:i", strtotime($evento->dataconsulta))?></td>
 										<td>
-											<button class="btn btn-info"><i class="fa fa-eye"></i></button>
+											<button class="btn btn-info" onclick="atualizarConsulta('<?php echo $evento->idagenda; ?>','<?php echo $evento->nome; ?>', '<?php echo $evento->medicoID; ?>', '<?php echo date('d/m/Y H:i', strtotime($evento->dataconsulta)); ?>', '<?php echo $evento->dataconsulta?>')"><i class="fa fa-eye"></i></button>
 											<button class="btn btn-danger" onclick="desmarcarConsulta(<?php echo $evento->idagenda ?>)"><i class="fa fa-remove"></i></button>
 										</td>
 									</tr>
@@ -125,6 +129,61 @@
                         </div>
                     </div>
                 </div>
+			</div>
+
+			<!--Modal usado para alguns alertas-->
+			<div class="modal fade" id="formEditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Editar Consulta</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="box-editar">
+											
+						<form method="post" name="form-consulta" id="form-consulta" action="../agendamentos/agenda.php">
+							<input type="hidden" name="tipoform" value="atualizar">
+							<input type="hidden" name="idpaciente" value="<?php echo $idpaciente; ?>">
+								
+							<div class="form-group">
+								<label for="paciente"><i class="fa fa-user"></i> Paciente</label>
+								<input type="paciente" disabled="disabled" class="form-control" id="paciente" name="paciente" placeholder="Nome do paciente" value="<?php echo $usuario?>">
+							</div>
+
+							<div class="form-group">
+								<label for="up-medico"><i class="fa fa-user-md"></i> Médico</label>
+								<select class="form-control" id="up-medico" name="medico">
+									<option value="">Selecione o médico</option>
+									<?php foreach($medicos->getAgendamentos() as $m => $medico): ?>								
+									<option value="<?php echo $medico->id?>"><?php echo $medico->medico?></option>
+									<?php endforeach; ?>								
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label for="dataconsulta"><i class="fa fa-calendar"></i> Data/Hora da consulta </label>
+								<input type="text" class="form-control" id="up-dataconsulta" name="up-dataconsulta" placeholder="Data da consulta">
+								<input type="text" class="form-control" id="up-datareal" name="up-datareal">
+								<input id="datetimepicker" type="text">
+								
+							</div>
+
+							<div class="box-error">
+								<div class="alert alert-danger erros" role="alert">
+									<!-- aqui virá as mensagens de erro -->
+								</div>
+							</div>
+							<button type="button" class="btn btn-info" id="agendarconsulta">Agendar consulta <i class="fa fa-plus"></i></button>
+						</form>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+					</div>
+					</div>
+				</div>
 			</div>
 
 			<!--Modal usado para alguns alertas-->
@@ -160,28 +219,15 @@
 		<script src="../fullcalendar/pt-br.js"></script>
 		<!-- <script src="http://code.jquery.com/jquery-1.8.2.js"></script> -->
 
-		<script language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+		<!-- <script language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script> -->
 
 		<!-- <script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script> -->
 		<!-- <script src="../js/calendario.js" crossorigin="anonymous"></script> -->
 		<script src="../js/dashboard.client.js" crossorigin="anonymous"></script>
-		
+		<script src="../datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 		<script>
-		$(document).ready(function(){			
-			/**
-			 * Função que busca e popular as options dos médicos
-			 * Os médicos foram cadastrados manualmente em um arquivo .json
-			 */
-			// $.ajax({				
-			// 	url: '../medicos/medicos.json',
-			// 	dataType:'json',		
-			// 	success: function(dados){					
-			// 		$.each(dados, function( index, value ) {
-			// 			//populando select
-			// 			$('#select-medico').append('<option value='+value.id+'>' + value.nome + '</option>');
-			// 		});
-			// 	}
-			// });
+		$(document).ready(function(){
+			
 		});
 		</script>
     </body>

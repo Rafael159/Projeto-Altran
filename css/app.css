@@ -111,7 +111,7 @@ main #description #sub-description{
 }
 .fc td, .fc th{ cursor: pointer;}
 .diaselecionado {
-    background-color: #f55 !important;
+    /* background-color: #f55 !important; */
     transition: background-color 80ms linear; 
 }
 /* .fc-month-button, .fc-agendaWeek-button{ display: none; } */
