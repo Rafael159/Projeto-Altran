@@ -74,13 +74,13 @@ class Agendamentos{
 
     //exibir registro individual
     public function getAgendamentos($queries = array()){		
-        $id = (array_key_exists("id", $queries)) ? (int)$queries['id'] : ''; 
+        $idagenda = (array_key_exists("idagenda", $queries)) ? (int)$queries['idagenda'] : ''; 
         $paciente = (array_key_exists("paciente", $queries)) ? (int)$queries['paciente'] : '';		
         $medico = (array_key_exists("medico", $queries)) ? $queries['medico'] : '';		
         $dataconsulta = (array_key_exists("dataconsulta", $queries)) ? $queries['dataconsulta'] : '';		
         $_where = array();
 
-        if($id) array_push($_where, " id = :id ");
+        if($idagenda) array_push($_where, " a.id = :idagenda ");
         if($paciente) array_push($_where, " paciente = :paciente ");
         if($medico) array_push($_where, " medico = :medico ");
         if($dataconsulta) array_push($_where, " dataconsulta = :dataconsulta ");		
@@ -97,7 +97,7 @@ class Agendamentos{
         $sql  = "SELECT a.id as idagenda, a.medico, a.paciente, a.dataconsulta, a.status, u.id as userID, u.nome, u.tipousuario, m.id as medicoID, m.medico, m.crm FROM agendamentos AS a INNER JOIN users AS u ON a.paciente = u.id INNER JOIN medicos AS m ON a.medico = m.id $where $w ORDER BY a.id DESC";
                 
         $stmt = @BD::conn()->prepare($sql);
-        if($id) $stmt->bindParam(':id', (int)$id);
+        if($idagenda) $stmt->bindParam(':idagenda', $idagenda);
         if($paciente) $stmt->bindParam(':paciente', $paciente);
         if($medico) $stmt->bindParam(':medico', $medico);
         if($dataconsulta) $stmt->bindParam(':dataconsulta', $dataconsulta);

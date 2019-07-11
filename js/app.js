@@ -25,7 +25,7 @@ $(document).ready(function(){
 	 * @param {* método usado (post, get)} metodo
 	 * @return - Sucesso / Erro
 	 */	
-	function executaFormulario(form, acao, metodo, tipo){
+	window.executaFormulario = function(form, acao, metodo, tipo){
 		idForm = form.attr("id");
 		
 		$.ajax({
@@ -85,6 +85,5 @@ $(document).ready(function(){
 
 		executaFormulario($form, $action, $method, 'login');
 	});
-	/*Fim funções referente ao login */
-
+	/*Fim funções referente ao login */	
 });

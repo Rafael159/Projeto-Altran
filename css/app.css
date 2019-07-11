@@ -96,7 +96,7 @@ main #description #sub-description{
 
 /*Calendário*/
 #calendar{
-    background: #0f4f52;
+    background: #35393a;
     margin: 15px 0;
     color: #fff;
 }
@@ -111,9 +111,6 @@ main #description #sub-description{
 }
 .fc td, .fc th{ cursor: pointer;}
 .diaselecionado {
-    /* background-color: #f55 !important; */
     transition: background-color 80ms linear; 
 }
-/* .fc-month-button, .fc-agendaWeek-button{ display: none; } */
-
 /*Fim Calendário*/

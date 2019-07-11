@@ -1,6 +1,10 @@
 $(document).ready(function(){
-    function load_calendar(){
-		
+
+    /**
+     * Função - Carregar calendário mostrando os eventos cadastrados
+     * Libs - Fullcalendar + Datetimepicker
+     */
+    function load_calendar(){		
 		$('#calendar').fullCalendar({
             locale: 'pt-br',	
 			header: {
@@ -39,13 +43,7 @@ $(document).ready(function(){
                 $(this).addClass('diaselecionado');
 
                 var dayselected = moment(date.format());//pegar e formatar data clicada
-                // console.log(dayselected);
-                // jQuery("#diasemana").val(dayselected.day());
-                //   zeraformulario();
-                //   setsalasclinicas('','');
-
-                //jQuery('#data').val(date);
-
+               
                 var $strdata = date.format().split('T'); 
                 var hora =  date.format().split('T')[1];
                 var data = new Date();
@@ -54,72 +52,26 @@ $(document).ready(function(){
                 }else{
                     jQuery('#dataconsulta').val(date.format('L') + ' ' + hora);//enviar para o formulário a data
                 }
-
                 jQuery('#datareal').val(date.format());//enviar para o formulário a data
                 
                 var dataAtual = (data.getFullYear() + '-' + (data.getMonth()+1) + '-' + data.getDate());
-                
-            // if(tipoperfil=='geral' && $strdata.length > 1){
-                
-            //     $("#boxredireciona").fadeOut();
-            //     jQuery('#exampleModal').modal('show');
-
-            //     if($strdata.length == 1){
-            //     $hora = "Agendamento Diário";
-            //     document.getElementById('str_hora').innerHTML = $hora;
-                
-            //     }else{
-            //     $hora = date.format().split('T')[1];
-            //     document.getElementById('str_hora').innerHTML = $hora;
-            //     }
-            
-            //     document.getElementById('str_data').innerHTML = dataconvert($strdata[0]);
-                
-            //     $('#pacx').append("<option value='10'>teste</option>");
-
-            //     $('#footer').html('');
-            //     if( !((date < moment()) && (!(moment().format('YYYY-MM-DD') == date.format('YYYY-MM-DD')))) ){
-            //     $('#footer').append("<button type='button' class='btn btn-success' onclick='salva()'>Salvar</button>");
-            //     $('#footer').append("<button type='button' class='btn btn-danger'  onclick='exclui()' data-dismiss='modal'>Excluir</button>");
-            //     }else{
-            //     $('#alerta').css('display','block').animate({opacity: 1});
-            //     $('#alerta').html('Agendamentos Indisponíveis para datas anteriores');
-            //     }
-            //     $('#footer').append("<button type='button' class='btn btn-primary' data-dismiss='modal'>Fechar</button>");
-            // }
         },
 		eventClick: function(calEvent, jsEvent, view){
-			console.log(calEvent);
+			
 		},
 		navLinks: true,   // can click day/week names to navigate views
 		eventLimit: false, // allow "more" link when too many events
 		editable: false,
 		events: function(start, end, timezone, callback) {
-      
-			//var filtros = [];
-			// salas = getSalas();
-			// medicos = getMedicos();
-			// grupoStatus = getStatus();
-           
 			$.ajax({
 				url: '../agendamentos/agenda.php',
                 method: 'POST',
-                // dataType: 'json',
 				data: {
-                    tipoform: 'consultaindividual'
-					// salas : salas,
-					// status: grupoStatus,
-					// medicos : medicos					
+                    tipoform: 'consultaindividual'										
 				},
 				success: function(doc){
-				events = jQuery.parseJSON(doc);       
-                    
-                // $.each(events, function( index, value ) {
-                //     console.log(index, value.id);
-                // });
-                // console.log(events[1].id);                
-                callback(events);
-                    				
+                    events = jQuery.parseJSON(doc);
+                    callback(events);	
 				}
 			});
 		},
@@ -134,7 +86,7 @@ $(document).ready(function(){
 	 * @param {* método usado (post, get)} metodo
 	 * @return - Sucesso / Erro
 	 */	
-	function scheduler(form, acao, metodo, tipo){
+	function scheduler(form, acao, metodo, tipo = ''){
 		idForm = form.attr("id");
 		
 		$.ajax({
@@ -146,7 +98,10 @@ $(document).ready(function(){
 				if(dados.status == "0"){
 					$("#"+idForm +" .box-error").fadeIn();
 					$("#"+idForm +" .box-error .erros").html(dados.mensagem);
-				}else{					
+				}else{	
+                    if(tipo=='atualizar'){
+                        alert(dados.mensagem);
+                    }
                     $("#"+idForm +" .box-error").fadeOut();
                     window.location.reload();
 				}
@@ -159,14 +114,8 @@ $(document).ready(function(){
         //informações do formulário
         $form = $(this).parent();
 		$action = $form.attr('action');
-		$method = $form.attr('method');
-        // idForm = $form.attr('id');
-
-        //dados do formulário
-        // $paciente = $('#paciente').val();
-        // $medico = $('#select-medico').val();
-        // $dataconsulta = $('#datareal').val();
-        console.log($method);
+        $method = $form.attr('method');
+        
         scheduler($form, $action, $method);
         
     });
@@ -174,7 +123,7 @@ $(document).ready(function(){
     window.desmarcarConsulta = function(id){
         var x = confirm("Tem certeza que deseja desmarcar a consulta #"+id+' ?');
         if (x){
-            //enviar via ajax ser deletado
+            //enviar via ajax para ser deletado
             $.ajax({
 				url: '../agendamentos/agenda.php',
                 method: 'POST',
@@ -183,8 +132,7 @@ $(document).ready(function(){
                     tipoform: 'deletar',
                     idagenda: id					
 				},
-                success: function(dados){
-                    console.log(dados);
+                success: function(dados){                    
                     if(dados.status =="0"){
                         alert(dados.mensagem);
                     }else{
@@ -199,13 +147,43 @@ $(document).ready(function(){
         }
     }
 
-    jQuery.datetimepicker.setLocale('pt-BR');
-    $('#datetimepicker').datetimepicker();	
-    
+    /**Função responsável por tratar a data/hora no update */
+    $(function () {
+        jQuery.datetimepicker.setLocale('pt-BR');
+        $('#datetimepicker').datetimepicker();
+        
+        $('#datetimepicker').blur(function(){
+            var dateVar = $(this).val();
+            var dataFormatada = new Date($(this).val());
+            
+            var hora = dataFormatada.getHours();
+            var minutos = dataFormatada.getMinutes();
+            if(minutos == '0') minutos = '00'
+
+            var hours = [hora, minutos].join(':');
+            var data = [dataFormatada.getDate(), dataFormatada.getMonth() + 1, dataFormatada.getFullYear()].join('/');
+
+            $("#up-datareal").val(dateVar);
+            $("#datetimepicker").val(data + ' '+ hours);
+        });
+    });
+
+    /**Atualizar consulta */
+    $('#btnAtualizaConsulta').on('click', function(ev){
+        ev.preventDefault();
+
+        //informações do formulário
+        $form = $(this).parent();
+		$action = $form.attr('action');
+		$method = $form.attr('method');
+        scheduler($form, $action, $method, 'atualizar');
+        
+    });
+
     window.atualizarConsulta = function(idagenda, nome, medicoID, dataconsulta, datareal){
-        console.log(idagenda, nome, medicoID, dataconsulta, datareal);
+        $("#up-idagenda").val(idagenda);
         $("#up-medico").val(medicoID);
-        $("#up-dataconsulta").val(dataconsulta);
+        $("#datetimepicker").val(dataconsulta);
         $("#up-datareal").val(datareal);
 
         $("#btnAbrir").click();
